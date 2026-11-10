@@ -95,7 +95,7 @@ export default function Shortlist() {
   const items = computeShortlist(state);
 
   const reroll = () => {
-    set({ excluded: [...state.excluded, ...items.map((i) => i.id)], rerollsLeft: state.rerollsLeft - 1, takes: {}, dismissed: {}, review: {}, released: false });
+    set({ excluded: [...state.excluded, ...items.map((i) => i.id)], rerollsLeft: state.rerollsLeft - 1, takes: {}, dismissed: {}, review: {} });
   };
 
   return (

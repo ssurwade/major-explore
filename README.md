@@ -2,7 +2,7 @@
 
 A web app that helps high-school students explore college majors: a guided intake, an explainable shortlist,
 a side-by-side comparison, small real-world activities, reflection, a revised shortlist and a printable one-pager.
-It also has a reviewer console for the concierge pilot, where a person checks the shortlist before the student sees it.
+It also has a hidden reviewer console (`#reviewer`) where a person can check and edit the generated shortlist text.
 
 ## Run it
 
@@ -21,8 +21,7 @@ Nothing the student sees is hard-coded. Every screen is generated from what they
 - **Engine** (`src/logic/engine.js`) scores majors from those answers, picks two that fit plus one “worth a try”
   from something not yet tried, and phrases every reason by quoting the student’s own words.
 - **Reviewer console** (`#reviewer`, staff only: no student screen links to it) lists each generated sentence with what it’s grounded in. Approve, edit or reject;
-  guardrails block wording like “strong match” or percentages. Edits replace what the student sees, and the student's
-  option screens stay locked until a reviewer releases the shortlist.
+  guardrails block wording like “strong match” or percentages. Optional for now: students see their options right away, and any edit made here replaces what they see.
 - **Reflection** feeds the **revision** (kept / moved up / removed / added, each with a reason), and the **one-pager**
   is assembled from everything above. Download PDF uses the browser’s print dialog.
 

@@ -1,7 +1,6 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Screen from '../components/Screen.jsx';
-import { Check } from '../components/Icons.jsx';
-import { Button, ButtonLink, Pill } from '../components/ui.jsx';
+import { Button, Pill } from '../components/ui.jsx';
 import { playback } from '../logic/engine.js';
 import { useStore } from '../state/store.jsx';
 
@@ -26,41 +25,9 @@ const Empty = ({ children }) => <span style={{ fontSize: 16, color: 'var(--subtl
 
 export default function Playback() {
   const [state, { set }] = useStore();
+  const navigate = useNavigate();
   const p = playback(state);
   const lastStep = 8;
-
-  if (state.submitted) {
-    return (
-      <Screen step={1} width={760}>
-        <div className="card" style={{ borderRadius: 24, padding: '44px 36px', alignItems: 'center', textAlign: 'center', gap: 22 }}>
-          <div style={{ width: 72, height: 72, borderRadius: '50%', background: 'var(--accent-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Check size={36} color="var(--accent)" width={1.6} />
-          </div>
-          <h1 style={display}>{state.released ? 'Your options are ready!' : 'You’re all set!'}</h1>
-          {state.released ? (
-            <p className="lede" style={{ fontSize: 19, maxWidth: 520 }}>A reviewer checked every reason on your shortlist. Take a look.</p>
-          ) : (
-            <p className="lede" style={{ fontSize: 19, maxWidth: 520 }}>
-              A real person checks your options before you see them. We’ll email you <strong>today</strong>, usually within [2 HOURS].
-            </p>
-          )}
-          <p className="note" style={{ fontSize: 16 }}>{state.released ? 'Everything’s saved.' : 'You can close this tab. Everything’s saved.'}</p>
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: 12 }}>
-            {state.released ? (
-              <ButtonLink to="/shortlist" variant="primary" size="lg">
-                See my options
-              </ButtonLink>
-            ) : (
-null
-            )}
-            <Button size="lg" onClick={() => set({ submitted: false })}>
-              Look at my answers again
-            </Button>
-          </div>
-        </div>
-      </Screen>
-    );
-  }
 
   return (
     <Screen step={1} width={760}>
@@ -111,7 +78,10 @@ null
       </div>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <Button variant="primary" size="xl" onClick={() => set({ submitted: true, released: false, review: {} })} style={{ fontSize: 18 }}>
+        <Button variant="primary" size="xl" onClick={() => {
+            set({ submitted: true });
+            navigate('/shortlist');
+          }} style={{ fontSize: 18 }}>
           Yep, that’s me
         </Button>
         <span className="note" style={{ fontSize: 15, textAlign: 'center' }}>

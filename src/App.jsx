@@ -11,11 +11,10 @@ import Revised from './screens/Revised.jsx';
 import Summary from './screens/Summary.jsx';
 import Reviewer from './screens/Reviewer.jsx';
 
-// Students only see options after a reviewer releases them.
-function Released({ children }) {
+// Option screens need intake answers to build from.
+function HasAnswers({ children }) {
   const [state] = useStore();
   if (!Object.keys(state.answers).length) return <Navigate to="/intake" replace />;
-  if (!state.released) return <Navigate to="/check" replace />;
   return children;
 }
 
@@ -25,13 +24,13 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/intake" element={<Intake />} />
       <Route path="/check" element={<Playback />} />
-      <Route path="/shortlist" element={<Released><Shortlist /></Released>} />
-      <Route path="/compare" element={<Released><Compare /></Released>} />
-      <Route path="/explore" element={<Released><Explore /></Released>} />
-      <Route path="/reflect" element={<Released><Reflect /></Released>} />
-      <Route path="/revised" element={<Released><Revised /></Released>} />
-      <Route path="/summary" element={<Released><Summary /></Released>} />
-      {/* Staff only: not linked from any student screen. */}
+      <Route path="/shortlist" element={<HasAnswers><Shortlist /></HasAnswers>} />
+      <Route path="/compare" element={<HasAnswers><Compare /></HasAnswers>} />
+      <Route path="/explore" element={<HasAnswers><Explore /></HasAnswers>} />
+      <Route path="/reflect" element={<HasAnswers><Reflect /></HasAnswers>} />
+      <Route path="/revised" element={<HasAnswers><Revised /></HasAnswers>} />
+      <Route path="/summary" element={<HasAnswers><Summary /></HasAnswers>} />
+      {/* Staff only, not linked from student screens. Optional: edits there change what students see. */}
       <Route path="/reviewer" element={<Reviewer />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

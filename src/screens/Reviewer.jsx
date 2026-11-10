@@ -118,7 +118,7 @@ export default function Reviewer() {
             <div aria-current="page" style={{ display: 'flex', flexDirection: 'column', gap: 4, padding: '14px 18px', background: 'var(--accent-soft)' }}>
               <span style={{ display: 'flex', justifyContent: 'space-between', gap: 8 }}>
                 <strong style={{ fontSize: 15 }}>{label}</strong>
-                <span style={{ fontSize: 13, fontWeight: 600, color: state.released ? 'var(--subtle)' : 'var(--try)' }}>{state.released ? 'Released' : 'Waiting'}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: state.released ? 'var(--subtle)' : 'var(--try)' }}>{state.released ? 'Reviewed' : 'Not reviewed'}</span>
               </span>
               <span style={{ fontSize: 13, color: 'var(--muted)' }}>
                 Shortlist v{state.excluded.length ? Math.ceil(state.excluded.length / 3) + 1 : 1} · {fields.length} fields
@@ -163,19 +163,19 @@ export default function Reviewer() {
                     {decided.length} of {fields.length} fields reviewed
                   </strong>
                   <span style={{ fontSize: 13, color: 'var(--subtle)' }}>
-                    {blocked ? 'A guardrail is blocking release. Edit or reject the flagged field.' : 'Edits replace the draft text the student sees.'}
+                    {blocked ? 'A guardrail is flagging a field. Edit or reject it before marking it reviewed.' : 'Students already see this list. Edits replace the text they see.'}
                   </span>
                 </div>
                 {state.released ? (
                   <span style={{ display: 'flex', gap: 10, alignItems: 'center', flexWrap: 'wrap' }}>
-                    <strong style={{ color: 'var(--accent-strong)' }}>Released to student</strong>
-                    <Link to="/check" className="btn btn--secondary">
+                    <strong style={{ color: 'var(--accent-strong)' }}>Reviewed</strong>
+                    <Link to="/shortlist" className="btn btn--secondary">
                       View as student
                     </Link>
                   </span>
                 ) : (
                   <button type="button" className={`btn ${ready ? 'btn--primary' : ''}`} disabled={!ready} onClick={() => set({ released: true })} style={{ fontSize: 15 }}>
-                    Release to student
+                    Mark as reviewed
                   </button>
                 )}
               </div>

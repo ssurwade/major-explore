@@ -22,8 +22,7 @@ const WONT = [
 function resumePath(s) {
   if (s.revision === 'accepted') return '/summary';
   if (Object.keys(s.reflections).length) return '/reflect';
-  if (s.released) return '/shortlist';
-  if (s.submitted) return '/check';
+  if (s.submitted) return '/shortlist';
   return '/intake';
 }
 
