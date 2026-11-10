@@ -51,20 +51,12 @@ export default function Playback() {
                 See my options
               </ButtonLink>
             ) : (
-              <>
-                <ButtonLink to="/reviewer" variant="primary" size="lg">
-                  Open the reviewer console
-                </ButtonLink>
-                <ButtonLink to="/shortlist" size="lg">
-                  Preview my options
-                </ButtonLink>
-              </>
+null
             )}
             <Button size="lg" onClick={() => set({ submitted: false })}>
               Look at my answers again
             </Button>
           </div>
-          {!state.released && <p className="note">Prototype: the reviewer console is where a person approves your shortlist.</p>}
         </div>
       </Screen>
     );

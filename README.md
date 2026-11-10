@@ -20,9 +20,9 @@ Nothing the student sees is hard-coded. Every screen is generated from what they
   free text, up to three priorities, constraints and a starting confidence.
 - **Engine** (`src/logic/engine.js`) scores majors from those answers, picks two that fit plus one “worth a try”
   from something not yet tried, and phrases every reason by quoting the student’s own words.
-- **Reviewer console** (`/reviewer`) lists each generated sentence with what it’s grounded in. Approve, edit or reject;
-  guardrails block wording like “strong match” or percentages. Edits replace what the student sees, and release
-  marks the shortlist as checked.
+- **Reviewer console** (`#/reviewer`, staff only: no student screen links to it) lists each generated sentence with what it’s grounded in. Approve, edit or reject;
+  guardrails block wording like “strong match” or percentages. Edits replace what the student sees, and the student's
+  option screens stay locked until a reviewer releases the shortlist.
 - **Reflection** feeds the **revision** (kept / moved up / removed / added, each with a reason), and the **one-pager**
   is assembled from everything above. Download PDF uses the browser’s print dialog.
 

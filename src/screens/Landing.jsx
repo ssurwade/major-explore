@@ -39,9 +39,6 @@ export default function Landing() {
         <div className="app-header__inner" style={{ maxWidth: 1200, padding: '14px 24px' }}>
           <Brand size={17} />
           <nav aria-label="Account" style={{ display: 'flex', gap: 8 }}>
-            <Link to="/reviewer" className="btn" style={{ fontSize: 15, color: 'var(--subtle)' }}>
-              Reviewer console
-            </Link>
             <Link to={resumePath(state)} className="btn" style={{ fontSize: 15 }}>
               {started ? 'Continue' : 'Sign in'}
             </Link>
@@ -182,7 +179,6 @@ export default function Landing() {
           <span>Facts drawn from public data: NCES, O*NET, BLS Occupational Outlook Handbook, College Scorecard.</span>
           <nav aria-label="Footer" style={{ display: 'flex', gap: 20 }}>
             <a href="#how">Privacy</a>
-            <Link to="/reviewer">For counselors</Link>
           </nav>
         </div>
       </footer>

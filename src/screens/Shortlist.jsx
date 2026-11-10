@@ -102,13 +102,8 @@ export default function Shortlist() {
     <Screen step={2}>
       <Intro
         title={`${state.name || 'Hey'}, here are ${items.length} options to check out`}
-        lede={state.released ? 'Checked by a reviewer. These are first guesses, not final answers. You’ll test them next.' : 'These are first guesses, not final answers. You’ll test them next.'}
+        lede="These are first guesses, not final answers. You’ll test them next."
       />
-      {!state.released && state.submitted && (
-        <p className="callout-try" style={{ maxWidth: 700 }}>
-          <strong>Preview.</strong> A reviewer hasn’t checked these yet, so wording may change.
-        </p>
-      )}
       <ViewTabs current="cards" />
 
       {items.length === 0 ? (
