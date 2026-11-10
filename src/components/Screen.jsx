@@ -1,37 +1,63 @@
 import { Link } from 'react-router-dom';
-import { BackIcon } from './Icons.jsx';
+import { Check, LogoMark } from './Icons.jsx';
+import { useStore } from '../state/store.jsx';
 
-const TOTAL_STEPS = 6;
+const STEPS = [
+  { n: 1, label: 'About you', to: '/intake' },
+  { n: 2, label: 'Your options', to: '/shortlist' },
+  { n: 3, label: 'Try it', to: '/explore' },
+  { n: 4, label: 'Share', to: '/summary' },
+];
 
-// Shared phone-width shell: top bar with back link or brand, progress, scrolling body, sticky footer.
-export default function Screen({ step, back, title, lede, footer, bleed = false, children }) {
+export function Brand({ size = 16 }) {
   return (
-    <div className="screen">
-      <header className="screen__header">
-        <div className="screen__bar">
-          {back ? (
-            <Link to={back} className="screen__back" aria-label="Back">
-              <BackIcon />
-            </Link>
-          ) : (
-            <span className="screen__brand">major/explore</span>
-          )}
-          <span className="screen__step">
-            {step} of {TOTAL_STEPS}
+    <Link to="/" aria-label="Home" className="brand" style={{ fontSize: size }}>
+      <LogoMark size={size + 10} />
+      <span>College Major Exploration</span>
+    </Link>
+  );
+}
+
+// Student-facing shell: brand, the four-step progress nav, and the signed-in initial.
+export default function Screen({ step, width = 1100, gap = 24, children }) {
+  const [state] = useStore();
+  const name = state.name || 'you';
+  const optionsTo = state.revision === 'accepted' ? '/revised' : '/shortlist';
+  return (
+    <div className="page">
+      <header className="app-header">
+        <div className="app-header__inner">
+          <Brand />
+          <nav aria-label="Your progress" className="steps">
+            <ol>
+              {STEPS.map((s) => {
+                const current = s.n === step;
+                const done = s.n < step;
+                return (
+                  <li key={s.n}>
+                    <Link
+                      to={s.n === 2 ? optionsTo : s.to}
+                      aria-current={current ? 'step' : undefined}
+                      className={`step${done ? ' step--done' : ''}`}
+                    >
+                      <span className="step__num" aria-label={done ? 'done' : undefined}>
+                        {done ? <Check /> : s.n}
+                      </span>
+                      {s.label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+          <span className="avatar" role="img" aria-label={`Signed in as ${name}`}>
+            {(state.name || '?').charAt(0).toUpperCase()}
           </span>
         </div>
-        <div className="progress" role="progressbar" aria-valuemin={0} aria-valuemax={TOTAL_STEPS} aria-valuenow={step}>
-          <div className="progress__fill" style={{ width: `${Math.round((step / TOTAL_STEPS) * 100)}%` }} />
-        </div>
       </header>
-      <main className={`screen__main${bleed ? ' screen__main--bleed' : ''}`}>
-        <div className="intro">
-          <h1 className="intro__title">{title}</h1>
-          {lede && <p className="intro__lede">{lede}</p>}
-        </div>
+      <main className="container" style={{ maxWidth: width + 40, gap }}>
         {children}
       </main>
-      {footer && <footer className="screen__footer">{footer}</footer>}
     </div>
   );
 }
