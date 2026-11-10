@@ -13,6 +13,9 @@ function ScrollToTop() {
   return null;
 }
 
+// Staff address: hosts that only pass a plain #name (no slash) can still open the console via #reviewer.
+if (window.location.hash === '#reviewer') window.location.replace('#/reviewer');
+
 // HashRouter so the built app works on any static host without rewrite rules.
 createRoot(document.getElementById('root')).render(
   <StrictMode>
