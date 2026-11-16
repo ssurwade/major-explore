@@ -1,46 +1,79 @@
 import { Link } from 'react-router-dom';
 
-export function Mark({ children }) {
-  return <span className="mark">{children}</span>;
+const cx = (...xs) => xs.filter(Boolean).join(' ');
+
+// Button and ButtonLink share the .btn look. variant: primary | secondary | ghost | inverse. size: sm | lg | xl.
+export function Button({ variant = 'secondary', size, className, ...props }) {
+  return <button type="button" className={cx('btn', `btn--${variant}`, size && `btn--${size}`, className)} {...props} />;
 }
 
-export function CtaLink({ to, children }) {
+export function ButtonLink({ to, variant = 'secondary', size, className, ...props }) {
+  return <Link to={to} className={cx('btn', `btn--${variant}`, size && `btn--${size}`, className)} {...props} />;
+}
+
+// Pressable choice. tone: ink (black when on) | solid (blue) | soft (light blue + ring).
+export function Toggle({ pressed, tone = 'ink', pill = false, className, ...props }) {
   return (
-    <Link to={to} className="cta">
-      {children}
-    </Link>
+    <button
+      type="button"
+      aria-pressed={pressed ? 'true' : 'false'}
+      className={cx('toggle', `toggle--${tone}`, pill && 'toggle--pill', className)}
+      {...props}
+    />
   );
 }
 
-export function CtaButton({ children, ...props }) {
+export function Pill({ tone, small, className, ...props }) {
+  return <span className={cx('pill', tone && `pill--${tone}`, small && 'pill--sm', className)} {...props} />;
+}
+
+export function Badge({ tone, className, ...props }) {
+  return <span className={cx('badge', tone && `badge--${tone}`, className)} {...props} />;
+}
+
+export function Intro({ title, lede, eyebrow, children }) {
   return (
-    <button type="button" className="cta" {...props}>
+    <div className="intro">
+      {eyebrow && <span style={{ fontSize: 15, color: 'var(--subtle)' }}>{eyebrow}</span>}
+      <h1 className="title">{title}</h1>
+      {lede && <p className="lede">{lede}</p>}
       {children}
-    </button>
+    </div>
   );
 }
 
-export function TextButton({ children, ...props }) {
+export function ViewTabs({ current }) {
   return (
-    <button type="button" className="text-btn" {...props}>
-      {children}
-    </button>
+    <div role="tablist" aria-label="View" className="tabs">
+      <Link to="/shortlist" role="tab" aria-selected={current === 'cards'} className="tab">
+        Cards
+      </Link>
+      <Link to="/compare" role="tab" aria-selected={current === 'compare'} className="tab">
+        Side by side
+      </Link>
+    </div>
   );
 }
 
-// Pressable pill. `onGround` gives it a white rest state for use directly on the lavender ground;
-// `variant` picks the pressed color ("accent" = orange, "done" = mint, default = ink).
-export function Choice({ pressed, onGround = false, variant, className = '', style, children, ...props }) {
-  const classes = ['choice', onGround && 'choice--on-ground', variant && `choice--${variant}`, className]
-    .filter(Boolean)
-    .join(' ');
+export function DarkPanel({ title, text, children }) {
   return (
-    <button type="button" aria-pressed={pressed} className={classes} style={style} {...props}>
+    <div className="panel-dark">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: 640 }}>
+        <strong>{title}</strong>
+        <span>{text}</span>
+      </div>
       {children}
-    </button>
+    </div>
   );
 }
 
-export function Badge({ tone, children }) {
-  return <span className={`badge${tone ? ` badge--${tone}` : ''}`}>{children}</span>;
+export function Field({ id, label, ...props }) {
+  return (
+    <div className="field">
+      <label htmlFor={id} className="field__label">
+        {label}
+      </label>
+      <input id={id} className="input" {...props} />
+    </div>
+  );
 }

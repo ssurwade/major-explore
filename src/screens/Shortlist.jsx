@@ -1,114 +1,160 @@
-import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import Screen from '../components/Screen.jsx';
-import { Badge, Choice, CtaLink, Mark, TextButton } from '../components/ui.jsx';
+import { TryIcon } from '../components/Icons.jsx';
+import { Badge, Button, ButtonLink, DarkPanel, Intro, Toggle, ViewTabs } from '../components/ui.jsx';
+import { computeShortlist } from '../logic/engine.js';
+import { useStore } from '../state/store.jsx';
 
-const LANES = [
-  {
-    id: 'bio',
-    name: 'Biology',
-    fit: 'You like bio class and loved volunteering with animals.',
-    not: 'Some careers here need grad or professional school.',
-    q: 'Lab work or field work?',
-  },
-  {
-    id: 'gd',
-    name: 'Graphic Design',
-    fit: 'Art club is something you chose for fun.',
-    not: 'A lot of the work is for someone else’s goals.',
-    q: 'Do you like designing for other people?',
-  },
-  {
-    id: 'cb',
-    name: 'Computational Biology',
-    worth: true,
-    fit: 'You haven’t tried coding yet, and it connects to biology, which you like.',
-    not: 'Uses math and stats a lot, though not timed tests.',
-    q: 'Would you enjoy writing code?',
-  },
+const TAKES = [
+  ['interested', 'Into it'],
+  ['unsure', 'Maybe'],
+  ['no', 'Not for me'],
 ];
+const CRED = [
+  ['yes', 'Yes'],
+  ['mostly', 'Kind of'],
+  ['no', 'Not really'],
+];
+const h2 = { margin: 0, fontFamily: 'var(--font-display)', fontSize: 30, fontWeight: 700 };
 
-const RATINGS = [
-  { id: 'in', label: 'Into it' },
-  { id: 'no', label: 'Not for me' },
-];
+function Take({ item }) {
+  const [state, { merge }] = useStore();
+  const cur = state.takes[item.id];
+  return (
+    <fieldset className="fieldset" style={{ marginTop: 'auto', paddingTop: 16, borderTop: `1px solid ${item.slot === 'try' ? '#f1dcc8' : 'var(--line-soft)'}`, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <legend style={{ fontSize: 15, fontWeight: 600, marginBottom: 10 }}>Your take?</legend>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 8, clear: 'both' }}>
+        {TAKES.map(([k, label]) => (
+          <Toggle key={k} pressed={cur === k} onClick={() => merge('takes', { [item.id]: cur === k ? null : k })}>
+            {label}
+          </Toggle>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function OptionCard({ item, n }) {
+  const [, { merge }] = useStore();
+  if (item.slot === 'try') {
+    return (
+      <article className="card card--try" style={{ gap: 18 }}>
+        <div className="row-between" style={{ gap: 8 }}>
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, fontSize: 14, fontWeight: 700, color: 'var(--try-strong)' }}>
+            <TryIcon /> Option {n} · Worth a try
+          </span>
+          <button type="button" className="btn btn--sm" onClick={() => merge('dismissed', { [item.id]: true })} aria-label={`Remove ${item.major.name}`} style={{ border: '1px solid var(--try-line-soft)', background: '#fff', color: 'var(--try-strong)', fontSize: 14, fontWeight: 600, padding: '0 12px' }}>
+            Remove
+          </button>
+        </div>
+        <h2 style={h2}>{item.major.name}</h2>
+        <p className="body" style={{ padding: 14, borderRadius: 14, background: 'var(--try-soft)', color: 'var(--try-deep)' }}>{item.tryReason}</p>
+        <p className="body">
+          <strong style={{ color: 'var(--try)' }}>Heads-up:</strong> {item.headsUp}
+        </p>
+        <p className="body">
+          <strong style={{ color: 'var(--muted)' }}>Find out:</strong> {item.findOut}
+        </p>
+        <Take item={item} />
+      </article>
+    );
+  }
+  return (
+    <article className="card" style={{ gap: 18 }}>
+      <div className="row-between" style={{ gap: 8 }}>
+        <span className="label">Option {n}</span>
+        <Badge tone="guess">First guess</Badge>
+      </div>
+      <h2 style={h2}>{item.major.name}</h2>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--accent-strong)' }}>Because you said…</span>
+        {item.fitEdited ? (
+          <p className="quote">{item.fitText}</p>
+        ) : (
+          item.reasons.map((r) => (
+            <p key={r} className="quote">
+              “{r}”
+            </p>
+          ))
+        )}
+      </div>
+      <p className="body">
+        <strong style={{ color: 'var(--try)' }}>Heads-up:</strong> {item.headsUp}
+      </p>
+      <p className="body">
+        <strong style={{ color: 'var(--muted)' }}>Find out:</strong> {item.findOut}
+      </p>
+      <Take item={item} />
+    </article>
+  );
+}
 
 export default function Shortlist() {
-  const [rating, setRating] = useState({ bio: 'in' });
-  const [open, setOpen] = useState({ cb: true });
+  const [state, { set, merge }] = useStore();
+  if (!Object.keys(state.answers).length) return <Navigate to="/intake" replace />;
+  const items = computeShortlist(state);
+
+  const reroll = () => {
+    set({ excluded: [...state.excluded, ...items.map((i) => i.id)], rerollsLeft: state.rerollsLeft - 1, takes: {}, dismissed: {}, review: {} });
+  };
 
   return (
-    <Screen
-      step={2}
-      back="/"
-      title={
-        <>
-          Your <Mark>3 lanes</Mark>
-        </>
-      }
-      lede="A starting point, not a verdict."
-      footer={<CtaLink to="/compare">Compare them</CtaLink>}
-    >
-      {LANES.map((lane) => {
-        const isOpen = !!open[lane.id];
-        const dimmed = lane.worth && rating[lane.id] === 'no';
-        return (
-          <article
-            key={lane.id}
-            className="card"
-            style={{
-              boxShadow: lane.worth ? 'inset 0 0 0 2px var(--orange)' : undefined,
-              opacity: dimmed ? 0.5 : 1,
-            }}
-          >
-            <div className="row-between" style={{ gap: 12 }}>
-              <h2
-                style={{
-                  margin: 0,
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 18,
-                  lineHeight: 1.2,
-                  fontWeight: 700,
-                  letterSpacing: '-0.02em',
-                }}
-              >
-                {lane.name}
-              </h2>
-              {lane.worth && <Badge tone="orange">Worth a try</Badge>}
-            </div>
-            <p style={{ margin: 0, fontSize: 15, lineHeight: 1.45 }}>{lane.fit}</p>
-            {isOpen && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 8, paddingTop: 4, fontSize: 14, lineHeight: 1.45, color: 'var(--muted)' }}>
-                <p style={{ margin: 0 }}>
-                  <strong style={{ color: 'var(--ink)' }}>Why it might not:</strong> {lane.not}
-                </p>
-                <p style={{ margin: 0 }}>
-                  <strong style={{ color: 'var(--ink)' }}>Still to find out:</strong> {lane.q}
-                </p>
+    <Screen step={2}>
+      <Intro
+        title={`${state.name || 'Hey'}, here are ${items.length} options to check out`}
+        lede="These are first guesses, not final answers. You’ll test them next."
+      />
+      <ViewTabs current="cards" />
+
+      {items.length === 0 ? (
+        <div className="card">
+          <strong style={{ fontSize: 18 }}>We need a bit more to go on</strong>
+          <span className="body">Mark at least one subject as “Like it” or “Haven’t tried it.”</span>
+          <ButtonLink to="/intake" variant="primary">
+            Back to your answers
+          </ButtonLink>
+        </div>
+      ) : (
+        <div className="grid-cards">
+          {items.map((it, i) =>
+            state.dismissed[it.id] ? (
+              <div key={it.id} className="card" style={{ border: '2px dashed var(--line-strong)', justifyContent: 'center', alignItems: 'flex-start', gap: 12 }}>
+                <strong style={{ fontSize: 18 }}>{it.major.name} removed</strong>
+                <span className="body" style={{ color: 'var(--muted)' }}>
+                  No problem. Your other {items.length - 1 === 1 ? 'option stays' : `${items.length - 1} options stay`} the same.
+                </span>
+                <Button size="sm" style={{ fontWeight: 600 }} onClick={() => merge('dismissed', { [it.id]: false })}>
+                  Undo
+                </Button>
               </div>
-            )}
-            <div className="row-between">
-              <TextButton aria-expanded={isOpen} onClick={() => setOpen({ ...open, [lane.id]: !isOpen })}>
-                {isOpen ? 'Less' : 'Why not?'}
-              </TextButton>
-              <div style={{ display: 'flex', gap: 6 }}>
-                {RATINGS.map((r) => {
-                  const on = rating[lane.id] === r.id;
-                  return (
-                    <Choice
-                      key={r.id}
-                      pressed={on}
-                      style={{ padding: '0 14px', fontSize: 13 }}
-                      onClick={() => setRating({ ...rating, [lane.id]: on ? null : r.id })}
-                    >
-                      {r.label}
-                    </Choice>
-                  );
-                })}
-              </div>
-            </div>
-          </article>
-        );
-      })}
+            ) : (
+              <OptionCard key={it.id} item={it} n={i + 1} />
+            )
+          )}
+        </div>
+      )}
+
+      <DarkPanel title="Next: see how they compare" text="Classes, jobs, extra school and money, side by side.">
+        <ButtonLink to="/compare" variant="inverse" size="lg">
+          Compare them
+        </ButtonLink>
+      </DarkPanel>
+
+      <div className="row-between" style={{ gap: 16 }}>
+        <fieldset className="fieldset" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
+          <legend style={{ fontSize: 16, fontWeight: 600, marginRight: 6 }}>Do these make sense for you?</legend>
+          <div style={{ display: 'flex', gap: 6 }}>
+            {CRED.map(([k, label]) => (
+              <Toggle key={k} pill tone="solid" pressed={state.credibility === k} onClick={() => set({ credibility: k })}>
+                {label}
+              </Toggle>
+            ))}
+          </div>
+        </fieldset>
+        <Button variant="ghost" disabled={state.rerollsLeft <= 0} onClick={reroll} style={{ fontSize: 15, padding: '0 4px', background: 'transparent' }}>
+          None of these? Show me different ones ({state.rerollsLeft} left)
+        </Button>
+      </div>
     </Screen>
   );
 }
