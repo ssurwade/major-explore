@@ -1,5 +1,13 @@
 # College Major Exploration
 
+**Try it:** https://ssurwade.github.io/major-explore/ (no install or account needed; your answers stay in your own browser)
+
+![Shortlist: three options, each with the student's own words as reasons](docs/screenshots/04-shortlist.jpg)
+
+| Compare side by side | What changed after trying things | One-pager |
+| --- | --- | --- |
+| ![Comparison](docs/screenshots/05-compare.jpg) | ![What changed](docs/screenshots/08-revised.jpg) | ![One-pager](docs/screenshots/09-summary.jpg) |
+
 A web app that helps high-school students explore college majors: a guided intake, an explainable shortlist,
 a side-by-side comparison, small real-world activities, reflection, a revised shortlist and a printable one-pager.
 It also has a hidden reviewer console (`#reviewer`) where a person can check and edit the generated shortlist text.
