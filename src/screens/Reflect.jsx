@@ -1,6 +1,6 @@
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import Screen from '../components/Screen.jsx';
-import { ButtonLink, Field, Intro, Toggle } from '../components/ui.jsx';
+import { ActionBar, Field, Intro, Toggle } from '../components/ui.jsx';
 import { CONFIDENCE } from '../data/catalog.js';
 import { chosenActivity, currentOptions } from '../logic/engine.js';
 import { useStore } from '../state/store.jsx';
@@ -94,21 +94,16 @@ export default function Reflect() {
         </div>
       </fieldset>
 
-      <div className="row-between">
-        <ButtonLink to="/explore" size="lg" style={{ fontWeight: 500 }}>
-          Back
-        </ButtonLink>
-        <button
-          type="button"
-          className="btn btn--primary btn--xl"
-          onClick={() => {
+      <ActionBar
+        back={{ to: '/explore', label: 'Back' }}
+        next={{
+          label: 'Update my options',
+          onClick: () => {
             set({ revision: 'pending', broughtBack: [] });
             navigate('/revised');
-          }}
-        >
-          Update my options
-        </button>
-      </div>
+          },
+        }}
+      />
     </Screen>
   );
 }

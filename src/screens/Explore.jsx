@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import Screen from '../components/Screen.jsx';
-import { Badge, Button, ButtonLink, DarkPanel } from '../components/ui.jsx';
+import { ActionBar, Badge, Button } from '../components/ui.jsx';
 import { chosenActivity, currentOptions } from '../logic/engine.js';
 import { useStore } from '../state/store.jsx';
 
@@ -104,11 +104,12 @@ export default function Explore() {
         ))}
       </div>
 
-      <DarkPanel title="Tried at least one? Tell us how it went." text="Takes about 2 minutes. Your options update based on what you say.">
-        <ButtonLink to="/reflect" variant="inverse" size="lg">
-          How did it go?
-        </ButtonLink>
-      </DarkPanel>
+      <ActionBar
+        title="Tried at least one? Tell us how it went."
+        text="Takes about 2 minutes. Your options update based on what you say."
+        back={{ to: '/compare', label: 'Back' }}
+        next={{ to: '/reflect', label: 'How did it go?' }}
+      />
     </Screen>
   );
 }

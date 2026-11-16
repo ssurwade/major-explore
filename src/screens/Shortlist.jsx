@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import Screen from '../components/Screen.jsx';
 import { TryIcon } from '../components/Icons.jsx';
-import { Badge, Button, ButtonLink, DarkPanel, Intro, Toggle, ViewTabs } from '../components/ui.jsx';
+import { ActionBar, Badge, Button, ButtonLink, Intro, Toggle, ViewTabs } from '../components/ui.jsx';
 import { computeShortlist } from '../logic/engine.js';
 import { useStore } from '../state/store.jsx';
 
@@ -134,12 +134,6 @@ export default function Shortlist() {
         </div>
       )}
 
-      <DarkPanel title="Next: see how they compare" text="Classes, jobs, extra school and money, side by side.">
-        <ButtonLink to="/compare" variant="inverse" size="lg">
-          Compare them
-        </ButtonLink>
-      </DarkPanel>
-
       <div className="row-between" style={{ gap: 16 }}>
         <fieldset className="fieldset" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 10 }}>
           <legend style={{ fontSize: 16, fontWeight: 600, marginRight: 6 }}>Do these make sense for you?</legend>
@@ -155,6 +149,7 @@ export default function Shortlist() {
           None of these? Show me different ones ({state.rerollsLeft} left)
         </Button>
       </div>
+      <ActionBar title="Next: see how they compare" text="Classes, jobs, extra school and money, side by side." next={{ to: '/compare', label: 'Compare them' }} />
     </Screen>
   );
 }
