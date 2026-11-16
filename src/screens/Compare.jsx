@@ -1,6 +1,6 @@
 import { Navigate } from 'react-router-dom';
 import Screen from '../components/Screen.jsx';
-import { ButtonLink, Intro, ViewTabs } from '../components/ui.jsx';
+import { ActionBar, Intro, ViewTabs } from '../components/ui.jsx';
 import { currentOptions } from '../logic/engine.js';
 import { useStore } from '../state/store.jsx';
 
@@ -89,14 +89,7 @@ export default function Compare() {
         <textarea id="explain" rows={2} className="textarea" style={{ borderColor: 'var(--accent-line)' }} value={state.compareNote} onChange={(e) => set({ compareNote: e.target.value })} />
       </section>
 
-      <div className="row-between">
-        <ButtonLink to="/shortlist" size="lg" style={{ fontWeight: 500 }}>
-          Back to cards
-        </ButtonLink>
-        <ButtonLink to="/explore" variant="primary" size="lg">
-          Next: try something real
-        </ButtonLink>
-      </div>
+      <ActionBar back={{ to: '/shortlist', label: 'Back to cards' }} next={{ to: '/explore', label: 'Next: try something real' }} />
     </Screen>
   );
 }

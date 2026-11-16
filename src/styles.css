@@ -640,3 +640,65 @@ input[type='checkbox'] {
     padding: 0 !important;
   }
 }
+
+/* ---------- Sticky action bar ---------- */
+
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  margin-top: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: 0 -6px 24px rgba(22, 24, 29, 0.08), 0 2px 6px rgba(22, 24, 29, 0.06);
+}
+.action-bar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  padding: 14px 16px 14px 22px;
+}
+.action-bar__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 260px;
+}
+.action-bar__text strong {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+}
+.action-bar__text span {
+  font-size: 14px;
+  color: var(--subtle);
+}
+.action-bar__buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-left: auto;
+}
+@media (max-width: 640px) {
+  .action-bar__inner {
+    padding: 12px;
+  }
+  .action-bar__text span {
+    display: none;
+  }
+  .action-bar__buttons {
+    width: 100%;
+  }
+  .action-bar__buttons .btn {
+    flex: 1 1 0;
+  }
+}
+@media print {
+  .action-bar {
+    display: none !important;
+  }
+}

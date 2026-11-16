@@ -55,18 +55,6 @@ export function ViewTabs({ current }) {
   );
 }
 
-export function DarkPanel({ title, text, children }) {
-  return (
-    <div className="panel-dark">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxWidth: 640 }}>
-        <strong>{title}</strong>
-        <span>{text}</span>
-      </div>
-      {children}
-    </div>
-  );
-}
-
 export function Field({ id, label, ...props }) {
   return (
     <div className="field">
@@ -74,6 +62,37 @@ export function Field({ id, label, ...props }) {
         {label}
       </label>
       <input id={id} className="input" {...props} />
+    </div>
+  );
+}
+
+// Sticky bar at the bottom of a step: always on screen, so the way forward is never below the fold.
+// `next` is { to, label } for a link or { onClick, label } for an action; `back` is { to, label }.
+export function ActionBar({ title, text, back, next }) {
+  return (
+    <div className="action-bar">
+      <div className="action-bar__inner">
+        <div className="action-bar__text">
+          {title && <strong>{title}</strong>}
+          {text && <span>{text}</span>}
+        </div>
+        <div className="action-bar__buttons">
+          {back && (
+            <ButtonLink to={back.to} size="lg" style={{ fontWeight: 500 }}>
+              {back.label}
+            </ButtonLink>
+          )}
+          {next.to ? (
+            <ButtonLink to={next.to} variant="primary" size="lg">
+              {next.label} <span aria-hidden="true">→</span>
+            </ButtonLink>
+          ) : (
+            <Button variant="primary" size="lg" onClick={next.onClick}>
+              {next.label} <span aria-hidden="true">→</span>
+            </Button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
